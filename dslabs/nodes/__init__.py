@@ -7,6 +7,7 @@ them by class name alone.
 
 import importlib
 
+from .node_jobs import NodeJobs
 
 from .node_eager_broadcast import NodeEagerBroadcast
 from .node_multi_leader import NodeMultiLeader
@@ -15,7 +16,7 @@ from .node_total_order import NodeTotalOrder
 from .node_total_order_eager_broadcast import NodeTotalOrderEagerBroadcast
 from .node_total_order_gossip import NodeTotalOrderGossip
 
-__all__ = ["NodeEagerBroadcast", "NodeMultiLeader", "NodeSingleLeader", "NodeTotalOrder", "NodeTotalOrderEagerBroadcast", "NodeTotalOrderGossip", "load_node_class"]
+__all__ = ["NodeJobs", "NodeEagerBroadcast", "NodeMultiLeader", "NodeSingleLeader", "NodeTotalOrder", "NodeTotalOrderEagerBroadcast", "NodeTotalOrderGossip", "load_node_class"]
 
 
 def load_node_class(spec: str) -> type:
