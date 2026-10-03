@@ -16,7 +16,6 @@ event without running it and ``step()`` runs exactly one event and returns a
 """
 
 import heapq
-import inspect
 from dataclasses import dataclass, field
 from typing import Any, Callable
 
@@ -83,11 +82,17 @@ def _owner_of(cb: Callable[[], None]) -> Any:
     bound = getattr(cb, "__self__", None)
     if isinstance(bound, Node):
         return bound
-    try:
-        free = inspect.getclosurevars(cb).nonlocals
-    except (TypeError, ValueError):
-        return None
-    return next((v for v in free.values() if isinstance(v, Node)), None)
+    # Read the closure cells directly. ``inspect.getclosurevars`` gives the same
+    # nonlocals but disassembles the bytecode to work out globals we never use,
+    # and this runs on every message the network schedules.
+    for cell in getattr(cb, "__closure__", None) or ():
+        try:
+            value = cell.cell_contents
+        except ValueError:  # cell not filled in yet
+            continue
+        if isinstance(value, Node):
+            return value
+    return None
 
 
 def _name_of(cb: Callable[[], None]) -> str:
