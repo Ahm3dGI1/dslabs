@@ -1,4 +1,41 @@
-# Distributed Systems Labs
+# Distributed Systems Labs — my coursework
+
+This is my fork of [Carl Scheffler's dslabs](https://github.com/cscheffler/dslabs)
+for the pre-class and post-class work in IL18105 at Minerva. The simulator and
+starter code are from the original repo. I've added my node implementations,
+experiments, and tests as we cover the topics in class.
+
+## My additions
+
+| Topic | Code | Notebook |
+|---|---|---|
+| Single-leader replication and per-key versions | [NodeSingleLeader](dslabs/nodes/node_single_leader.py) | [Session 1](examples/post_class_session_1.ipynb) |
+| Eager broadcast and ordering through a sequencer | [NodeEagerBroadcast](dslabs/nodes/node_eager_broadcast.py), [NodeTotalOrder](dslabs/nodes/node_total_order.py) | [Broadcast and ordering](examples/eager_broadcast_and_ordering.ipynb) |
+| Lamport clocks and gossip | [NodeTotalOrderEagerBroadcast](dslabs/nodes/node_total_order_eager_broadcast.py), [NodeTotalOrderGossip](dslabs/nodes/node_total_order_gossip.py) | [Gossip experiments](examples/pre_class_gossip.ipynb) |
+| CAS and a job queue using total order broadcast | [NodeJobs](dslabs/nodes/node_jobs.py), [JobClient](dslabs/job_client.py) | [Jobs](examples/pre_class_jobs.ipynb) |
+
+These are coursework implementations, including experiments that still fail.
+The Lamport/gossip versions still have ordering and delivery issues, and some
+earlier notebook explanations reflect older versions of the code. The jobs
+notebook includes the classes and tests directly and can be run from top to
+bottom after installing the simulator.
+
+The job queue handles network failures with the nodes alive. It doesn't recover
+from permanent node crashes or use a durable Raft log. Job actions are trusted
+Python code defining `run(item)`.
+
+To run the job tests and the sequencer replication tests:
+
+```bash
+python -m pytest tests/test_jobs.py
+python -m pytest tests/test_replication.py --node NodeTotalOrder
+```
+
+I also changed `Cluster` to pass node-specific keyword arguments through to the
+constructor, exported the new node classes, and changed how the scheduler finds
+the owner of a timer callback. The original simulator documentation is below.
+
+## Original simulator documentation
 
 A small, deterministic simulator for trying out distributed algorithms.
 
