@@ -7,9 +7,15 @@ them by class name alone.
 
 import importlib
 
-from .node_multi_leader import NodeMultiLeader
 
-__all__ = ["NodeMultiLeader", "load_node_class"]
+from .node_eager_broadcast import NodeEagerBroadcast
+from .node_multi_leader import NodeMultiLeader
+from .node_single_leader import NodeSingleLeader
+from .node_total_order import NodeTotalOrder
+from .node_total_order_eager_broadcast import NodeTotalOrderEagerBroadcast
+from .node_total_order_gossip import NodeTotalOrderGossip
+
+__all__ = ["NodeEagerBroadcast", "NodeMultiLeader", "NodeSingleLeader", "NodeTotalOrder", "NodeTotalOrderEagerBroadcast", "NodeTotalOrderGossip", "load_node_class"]
 
 
 def load_node_class(spec: str) -> type:
@@ -18,6 +24,10 @@ def load_node_class(spec: str) -> type:
     Accepted forms:
 
     - ``NodeMultiLeader``: a class exported from ``dslabs.nodes``
+    - ``NodeSingleLeader``: a class exported from ``dslabs.nodes``
+    - ``NodeTotalOrder``: a class exported from ``dslabs.nodes``
+    - ``NodeTotalOrderEagerBroadcast``: a class exported from ``dslabs.nodes``
+    - ``NodeTotalOrderGossip``: a class exported from ``dslabs.nodes``
     - ``some.module:ClassName``: an explicit module and class
     - ``some.module.ClassName``: the same, with a dot
     """

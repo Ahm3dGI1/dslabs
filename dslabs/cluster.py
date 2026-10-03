@@ -28,14 +28,15 @@ from .trace import Explanation, MessageTable, Timeline, Trace
 
 class Cluster:
     def __init__(self, node_class: Callable[..., Node], nodes: int | Sequence[str] = 3, seed: int = 0,
-                 latency_ms: tuple[int, int] = (30, 80), verbose: bool = False) -> None:
+                 latency_ms: tuple[int, int] = (30, 80), verbose: bool = False, **node_kwargs) -> None:
+
         self.node_ids = [f"n{i}" for i in range(1, nodes + 1)] if isinstance(nodes, int) else list(nodes)
         self.scheduler = SimScheduler(verbose=verbose)
         self.network = SimNetwork(self.scheduler, seed=seed, latency_ms=latency_ms)
         self.trace: Trace = self.scheduler.trace
         self.nodes: dict[str, Node] = {}
         for nid in self.node_ids:
-            node = node_class(nid, self.node_ids, self.network.endpoint(nid), self.scheduler)
+            node = node_class(nid, self.node_ids, self.network.endpoint(nid), self.scheduler, **node_kwargs)
             if not isinstance(node, Node):
                 raise TypeError(
                     f"{type(node).__name__} does not implement the Node interface "
